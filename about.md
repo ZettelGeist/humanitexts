@@ -16,3 +16,20 @@ You can find the source code for Jekyll at GitHub:
 
 
 [jekyll-organization]: https://github.com/jekyll
+
+Present dependencies for HumaniTexts
+
+- Zettelgeist
+- Vim
+- Marvim
+- vifm
+- NERDTree
+- VOoM for Vim
+
+Useful command line tools to deploy in order to stay focused and have consistency
+
+- ghi
+- slack-cli
+- links2
+- hangups 
+- vimium 
