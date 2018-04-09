@@ -17,7 +17,7 @@ You can find the source code for Jekyll at GitHub:
 
 (jekyll-organization): https://github.com/jekyll
 
-- Present dependencies for HumaniTexts
+- Present dependencies for _HumaniTexts_
   - _Zettelgeist_, for all research (http://zettelgeist.com/)
   - _Vim_, with very few plugins or modifications (https://www.vim.org/)
     - _VOoM_, for outlining in Vim (as powerful as Microsoft Word outlining) (https://www.vim.org/scripts/script.php?script_id=2657)
