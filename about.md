@@ -11,8 +11,8 @@ permalink: /about/
     - [VOoM](https://www.vim.org/scripts/script.php?script_id=2657) for outlining in Vim (as powerful as Microsoft Word outlining) 
     - [marvim.vim](https://github.com/vim-scripts/marvim/blob/master/plugin/marvim.vim) for making macros in Vim 
     - [markdown-preview.vim](https://github.com/iamcco/markdown-preview.vim) 
+    - [NERDTree](https://www.vim.org/scripts/script.php?script_id=1658) for file managing in Vim 
   - [vifm](https://vifm.info/) for file managing in place 
-  - [NERDTree](https://www.vim.org/scripts/script.php?script_id=1658) for file managing in Vim 
   - [gawk](https://www.gnu.org/software/gawk/) for some search and replace operations  
   - [zotero](https://www.zotero.org/) for bibliography management 
   - [better-bibtex](https://github.com/retorquere/zotero-better-bibtex) for integrating zotero with bibtex 
