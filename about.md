@@ -28,4 +28,16 @@ permalink: /about/
 - For the rest, in vim style
   - [vimium](https://vimium.github.io/) for vim keyboard shortcuts in chrome 
   - [wasavi](http://appsweets.net/wasavi/) to use vim editor to write email, fill out forms, etc. 
-
+  
+ - Tools that this method replaces 
+   - Microsoft Word, including Outlining 
+   - Procite, RefWorks, Endnote
+   - Onenote
+   - Evernote
+   - [Outliner of Giants](https://www.theoutlinerofgiants.com/outlines)
+   - Mendeley 
+   - [SuperNotecard](https://www.supernotecard.com/app/index.php?project=list)
+   - [Scrivener](https://www.literatureandlatte.com/scrivener/overview)
+   - [Zettelkasten3](http://zettelkasten.danielluedecke.de/en/)
+   - _Scribe_ (No longer available, but it was the project that came closest to providing a full platform for notetaking, outlining, and writing for serious scholarship.  Sponsored by Roy Rosenzweig Center for History and New Media. Developer Elena Razlogova passed the program on to Zotero.)
+   - _Squarenote_ (No longer available, but a wonderful DOS program that never made the transition to Windows. [Review from 1991.](https://drive.google.com/file/d/1AKvFXsa_sniTBIjyQAEcsSkl7EIGZMiu/view?usp=sharing) [Review from 1993.](https://drive.google.com/file/d/1ckViIW9ucqarra1sTNCD_n2cSIMRHRT5/view?usp=sharing))
