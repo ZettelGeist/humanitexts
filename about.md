@@ -17,6 +17,7 @@ permalink: /about/
   - [zotero](https://www.zotero.org/) for bibliography management 
   - [better-bibtex](https://github.com/retorquere/zotero-better-bibtex) for integrating zotero with bibtex 
   - [pandoc](https://pandoc.org/) for conversion of your markdown to whatever "they" need 
+  - [github](github.com) for ... everything that git does.
 
 - Useful command line tools to deploy in order to stay focused  
   - [mutt](http://www.mutt.org/) for email 
@@ -34,9 +35,9 @@ permalink: /about/
    - _Procite, RefWorks, Endnote, Mendeley_ (Bibliographical management softwares, sometimes mistaken as notetaking programs. Some manipulation of "notes" features can make them usable, but really they are designed for inputting bibliography and linking to notes in Word and GDocs. The same can be said of Zotero, though it is still an excellent bibliography manager, its "notes" system is not for research notetaking. See comment on _Scribe_ below.)
    - _Onenote, Evernote_ (Fine data gathering platforms, but not good data management systems. No real search and output capabilities.)
    - [Scrivener](https://www.literatureandlatte.com/scrivener/overview) (A favorite for many writers and researchers.  But the notetaking function, despite the corkboard system, is not a full data management system.)
-   - [Zettelkasten3](http://zettelkasten.danielluedecke.de/en/) (An excellent program that does integrate notetaking, bibliography, outlining, and writing, but is limited because it slows down as more material is added.)   - [Outliner of Giants](https://www.theoutlinerofgiants.com/outlines)
+   - [Zettelkasten3](http://zettelkasten.danielluedecke.de/en/) (An excellent program that does integrate notetaking, bibliography, outlining, and writing, but is limited because it slows down as more material is added.) 
    - [NoodleTools](https://www.noodletools.com/) (An excellent online iteration of a notetaking, outlining, and writing system.  Designed for targeted users of K-12.  Recommended for teachers and parents who want their students to learn the fundamental steps of research. Very nice interface with virtual notecards, sorting table, etc. Just not aimed at college-level or professional users.)
-   - [SuperNotecard](https://www.supernotecard.com/app/index.php?project=list)
-   - [The Outliner of Giants](https://www.theoutlinerofgiants.com/) 
+   - [SuperNotecard](https://www.supernotecard.com/app/index.php?project=list) (Nice interface replicating real notecards and sorting desk. Limited for data analysis.)
+   - [The Outliner of Giants](https://www.theoutlinerofgiants.com/) (Outlining connected to Google Docs, but every node separate. VOoM in Vim surpasses.)
    - [Scribe](https://forums.zotero.org/discussion/829/zotero-and-scribe-for-historians-especially) (No longer available, but it was the project that came closest to providing a full platform for notetaking, bibliographical management, outlining, and writing for serious scholarship.  Sponsored by Roy Rosenzweig Center for History and New Media. Developer Elena Razlogova passed the program on to Zotero. Many continue to hope that Zotero will gain better notetaking features that existed in Scribe.)
    - _Squarenote_ (No longer available, but IT WAS a wonderful DOS program that never made the transition to Windows. [Review from 1991.](https://drive.google.com/file/d/1AKvFXsa_sniTBIjyQAEcsSkl7EIGZMiu/view?usp=sharing) [Review from 1993.](https://drive.google.com/file/d/1ckViIW9ucqarra1sTNCD_n2cSIMRHRT5/view?usp=sharing))
