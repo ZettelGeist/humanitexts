@@ -30,14 +30,12 @@ permalink: /about/
   - [wasavi](http://appsweets.net/wasavi/) to use vim editor to write email, fill out forms, etc. 
   
  - Tools that this method replaces 
-   - Microsoft Word, including Outlining 
-   - Procite, RefWorks, Endnote
-   - Onenote
-   - Evernote
+   - _Microsoft Word,_ including Outlining (Great wysiwyg writing environment, but no notetaking and search capabilities.  Outlining feature probably the best, but it can be replicated in Vim with Voom.)
+   - _Procite, RefWorks, Endnote, Mendeley_ (Bibliographical management softwares, sometimes mistaken as notetaking programs. Some manipulation of "notes" features can make them usable, but really just for inputting bibliography and linking to notes in Word and GDocs. The same can be said of Zotero, though it is still an excellent bibliography manager, its "notes" system is not for research notetaking. See comment on Scribe below.)
+   - _Onenote, Evernote_ (Fine data gathering platforms, but not good data management systems. No real search and output capabilities.)
    - [Outliner of Giants](https://www.theoutlinerofgiants.com/outlines)
-   - Mendeley 
    - [SuperNotecard](https://www.supernotecard.com/app/index.php?project=list)
-   - [Scrivener](https://www.literatureandlatte.com/scrivener/overview)
-   - [Zettelkasten3](http://zettelkasten.danielluedecke.de/en/)
-   - _Scribe_ (No longer available, but it was the project that came closest to providing a full platform for notetaking, outlining, and writing for serious scholarship.  Sponsored by Roy Rosenzweig Center for History and New Media. Developer Elena Razlogova passed the program on to Zotero.)
-   - _Squarenote_ (No longer available, but a wonderful DOS program that never made the transition to Windows. [Review from 1991.](https://drive.google.com/file/d/1AKvFXsa_sniTBIjyQAEcsSkl7EIGZMiu/view?usp=sharing) [Review from 1993.](https://drive.google.com/file/d/1ckViIW9ucqarra1sTNCD_n2cSIMRHRT5/view?usp=sharing))
+   - [Scrivener](https://www.literatureandlatte.com/scrivener/overview) (A favorite for many writers and researchers.  But the notetaking function, despite the corkboard system, is not a full data management system.)
+   - [Zettelkasten3](http://zettelkasten.danielluedecke.de/en/) (An excellent program that does integrate notetaking, bibliography, outlining, and writing, but is limited because it slows down as more material is added.)
+   - [Scribe](https://forums.zotero.org/discussion/829/zotero-and-scribe-for-historians-especially) (No longer available, but it was the project that came closest to providing a full platform for notetaking, bibliographical management, outlining, and writing for serious scholarship.  Sponsored by Roy Rosenzweig Center for History and New Media. Developer Elena Razlogova passed the program on to Zotero. Many continue to hope that Zotero will gain better notetaking features that existed in Scribe.)
+   - _Squarenote_ (No longer available, but IT WAS a wonderful DOS program that never made the transition to Windows. [Review from 1991.](https://drive.google.com/file/d/1AKvFXsa_sniTBIjyQAEcsSkl7EIGZMiu/view?usp=sharing) [Review from 1993.](https://drive.google.com/file/d/1ckViIW9ucqarra1sTNCD_n2cSIMRHRT5/view?usp=sharing))
