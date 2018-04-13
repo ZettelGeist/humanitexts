@@ -25,6 +25,7 @@ permalink: /about/
   - [lynx](https://lynx.browser.org/) for searching 
   - [hangups](https://github.com/tdryer/hangups) for chatting with outside world (with google voice and hangouts until android messenger works) 
   - [ghi](https://github.com/stephencelis/ghi) for managing github issues
+  - tilix, iterm2, or tmux to return to panes and session windows (you don't need Windows to have windows - they are built into the OS - always were)  
 
 - For the rest, in vim style
   - [vimium](https://vimium.github.io/) for vim keyboard shortcuts in chrome 
@@ -41,3 +42,4 @@ permalink: /about/
    - [The Outliner of Giants](https://www.theoutlinerofgiants.com/) (Outlining connected to Google Docs, but every node separate. VOoM in Vim surpasses it.)
    - [Scribe](https://forums.zotero.org/discussion/829/zotero-and-scribe-for-historians-especially) (No longer available, but it was the project that came closest to providing a full platform for notetaking, bibliographical management, outlining, and writing for serious scholarship.  Sponsored by Roy Rosenzweig Center for History and New Media. Developer Elena Razlogova passed the program on to Zotero. Many continue to hope that Zotero will gain better notetaking features that existed in Scribe.)
    - _Squarenote_ (No longer available, but it was a wonderful DOS program that never made the transition to Windows. [Review from 1991.](https://drive.google.com/file/d/1AKvFXsa_sniTBIjyQAEcsSkl7EIGZMiu/view?usp=sharing) [Review from 1993.](https://drive.google.com/file/d/1ckViIW9ucqarra1sTNCD_n2cSIMRHRT5/view?usp=sharing))
+   - _Atom, Sublime Text 3_ and other IDEs.  See comment above about tilix, iterm2, tmux, etc. 
