@@ -45,3 +45,19 @@ permalink: /about/
    - [Scribe](https://forums.zotero.org/discussion/829/zotero-and-scribe-for-historians-especially) (No longer available, but it was the project that came closest to providing a full platform for notetaking, bibliographical management, outlining, and writing for serious scholarship.  Sponsored by Roy Rosenzweig Center for History and New Media. Developer Elena Razlogova passed the program on to Zotero. Many continue to hope that Zotero will gain better notetaking features that existed in Scribe.)
    - _Squarenote_ (No longer available, but it was a wonderful DOS program that never made the transition to Windows. [Review from 1991.](https://drive.google.com/file/d/1AKvFXsa_sniTBIjyQAEcsSkl7EIGZMiu/view?usp=sharing) [Review from 1993.](https://drive.google.com/file/d/1ckViIW9ucqarra1sTNCD_n2cSIMRHRT5/view?usp=sharing))
    - _Atom, Sublime Text 3_ and other IDEs.  See comment above about tilix, iterm2, tmux, etc. 
+
+
+# The Humanitexts Suite Setup
+
+Based on a photo of Tilix in action:  
+
+The top tiles are for processing the books.  Ignore.  
+
+The bottom three are, from left to right:
+
+L - the hoc-sandbox directory opened in Vim with NERDTree on left.  This lets you go to specific "pages" and look at them in context.  Let's say zfind has some interesting material on Rheingold-0325.  Use NERDTree to get into Rheingold folder, then find 0325.  Then you can read 0326, 0327..., and either add tags there or yank and put into new zettels elsewhere.  The key point, here, is that NERDTree does let you just open to "preview" as you wish.... This fills out the zfind and zfilter functions, when you want to see the relevant snippets in context.
+
+C - the center screen is a zfind result, then "sorted" with the sort script I made, and reading it in "less."  This is where you see what came out of a zfind search.  and you can then look to the Left tile if you want to see what comes on the next pages.  
+
+R - That is the Book Outline with :Voom markdown open.  You can write notes about what you are finding in the other two tiles, or even  yank and put things right in there. (Though we will probably want to make new zettels or add tags for future searches.)
+
