@@ -4,6 +4,8 @@ title: About
 permalink: /about/
 ---
 
+# Humanitexts
+## Use Technology for Higher Things
 
 - Present dependencies for _HumaniTexts_
   - [zettelgeist.com](http://zettelgeist.com/) for all research (you will see)
