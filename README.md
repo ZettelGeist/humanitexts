@@ -1,6 +1,6 @@
 # humanitexts
 
-Tools for transcribing and editing lecture and long-form audio into structured written prose.
+Tools for transcribing and editing lecture and long-form audio into cleaner written prose.
 
 ---
 
