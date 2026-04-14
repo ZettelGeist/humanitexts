@@ -1,52 +1,19 @@
 #!/usr/bin/env python3
 
-# PURPOSE:
-# High-throughput transcription and cleaning pipeline (fast batch processing)
-
-# INPUT:
-# - Audio files (.mp3, .mp4, .m4a, .wav)
-
-# OUTPUT:
-# - .md (cleaned markdown transcript)
-
-# DESCRIPTION:
-# - Runs Whisper transcription (typically medium model)
-# - Splits transcript into chunks
-# - Processes chunks with GPT-4.1-mini only
-# - Recombines into a single markdown output
-
-# USE CASE:
-# - Large batch processing (e.g., In Our Time archive)
-# - Fast, lower-cost transcript generation
-
-# NOTES:
-# - Optimized for speed and scale
-# - Includes thread limits for Whisper CPU control
-
 import subprocess
 import sys
 from pathlib import Path
 from concurrent.futures import ThreadPoolExecutor, as_completed
-import re
 
 import os
 import spacy
 from openai import OpenAI
 
 # ==============================
-# THREAD CONTROL (NEW)
-# ==============================
-
-os.environ["OMP_NUM_THREADS"] = "4"
-os.environ["MKL_NUM_THREADS"] = "4"
-os.environ["OPENBLAS_NUM_THREADS"] = "4"
-
-# ==============================
 # CONFIG
 # ==============================
 
-WHISPER_MODEL = "medium"
-
+WHISPER_MODEL = "medium.en"
 OPENAI_MODEL_MINI = "gpt-4.1-mini"
 
 CHUNK_WORDS = 500
@@ -91,16 +58,20 @@ nlp.add_pipe("sentencizer")
 # ==============================
 
 def enforce_ascii(text):
+    text = str(text)
+
     replacements = {
-        "":"-",
-        "":"-",
+        "—":"-",
+        "–":"-",
         "“":'"',
         "”":'"',
         "’":"'",
         "‘":"'"
     }
+
     for k,v in replacements.items():
         text = text.replace(k,v)
+
     return text
 
 # ==============================
@@ -109,21 +80,13 @@ def enforce_ascii(text):
 
 def transcribe(audio, work_dir):
 
-    env = os.environ.copy()
-    env["OMP_NUM_THREADS"] = "4"
-    env["MKL_NUM_THREADS"] = "4"
-    env["OPENBLAS_NUM_THREADS"] = "4"
-
     subprocess.run([
         "whisper",
         str(audio),
         "--model", WHISPER_MODEL,
-        "--language", "en",
-        "--condition_on_previous_text", "False",
-        "--no_speech_threshold", "0.1",
-        "--output_format", "txt",
+        "--task", "transcribe",
         "--output_dir", str(work_dir)
-    ], check=True, env=env)
+    ], check=True)
 
     txt = work_dir / f"{audio.stem}.txt"
 
@@ -187,7 +150,7 @@ def split(txt, work_dir):
     return files
 
 # ==============================
-# MINI EDIT
+# MINI EDIT (FINAL FIX)
 # ==============================
 
 def edit_file(file, work_dir):
@@ -202,7 +165,33 @@ def edit_file(file, work_dir):
         ]
     )
 
-    cleaned = enforce_ascii(r.output_text)
+    # SAFE extraction
+    parts = []
+    for item in r.output:
+        for c in item.content:
+            if hasattr(c, "text"):
+                parts.append(c.text)
+
+    raw = " ".join(parts)
+    raw = str(raw)
+
+    # ==============================
+    # CRITICAL FIX: NORMALIZE GPT OUTPUT
+    # ==============================
+
+    # Fix hyphen-separated characters
+    if "---" in raw:
+        pieces = raw.split("---")
+        if all(len(p.strip()) <= 1 for p in pieces[:50]):
+            raw = "".join(pieces)
+
+    # Fix space-separated characters
+    if " " in raw:
+        tokens = raw.split()
+        if all(len(t) == 1 for t in tokens[:50]):
+            raw = "".join(tokens)
+
+    cleaned = enforce_ascii(raw)
 
     out = work_dir / f"{file.stem}-mini.txt"
     out.write_text(cleaned)

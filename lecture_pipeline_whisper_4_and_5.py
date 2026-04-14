@@ -35,14 +35,6 @@ import spacy
 from openai import OpenAI
 
 # ==============================
-# THREAD CONTROL (NEW)
-# ==============================
-
-os.environ["OMP_NUM_THREADS"] = "4"
-os.environ["MKL_NUM_THREADS"] = "4"
-os.environ["OPENBLAS_NUM_THREADS"] = "4"
-
-# ==============================
 # CONFIG
 # ==============================
 
@@ -137,22 +129,13 @@ def enforce_ascii(text):
 
 def transcribe(audio, work_dir):
 
-    env = os.environ.copy()
-    env["OMP_NUM_THREADS"] = "4"
-    env["MKL_NUM_THREADS"] = "4"
-    env["OPENBLAS_NUM_THREADS"] = "4"
-
     subprocess.run([
         "whisper",
         str(audio),
         "--model", WHISPER_MODEL,
-        "--language", "en",
-        "--condition_on_previous_text", "False",
-        "--no_speech_threshold", "0.1",
-        "--initial_prompt", "This is a university lecture transcript.",
-        "--output_format", "txt",
+        "--task", "transcribe",
         "--output_dir", str(work_dir)
-    ], check=True, env=env)
+    ], check=True)
 
     txt = work_dir / f"{audio.stem}.txt"
 
