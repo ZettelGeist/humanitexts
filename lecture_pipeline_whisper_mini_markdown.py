@@ -1,11 +1,9 @@
 #!/usr/bin/env python3
 
-import subprocess
 import sys
 from pathlib import Path
-from concurrent.futures import ThreadPoolExecutor, as_completed
+import subprocess
 
-import os
 import spacy
 from openai import OpenAI
 
@@ -17,11 +15,8 @@ WHISPER_MODEL = "medium.en"
 OPENAI_MODEL_MINI = "gpt-4.1-mini"
 
 CHUNK_WORDS = 500
-MAX_WORKERS = 4
 
 WORK_DIR = "_transcription_work"
-
-client = OpenAI()
 
 # ==============================
 # PROMPT
@@ -54,55 +49,50 @@ nlp = spacy.load("en_core_web_sm", disable=["parser","tagger","ner"])
 nlp.add_pipe("sentencizer")
 
 # ==============================
-# ASCII CLEANER
+# CLEANER
 # ==============================
 
 def enforce_ascii(text):
     text = str(text)
 
     replacements = {
-        "—":"-",
-        "–":"-",
-        "“":'"',
-        "”":'"',
-        "’":"'",
-        "‘":"'"
+        "“": '"',
+        "”": '"',
+        "’": "'",
+        "‘": "'"
     }
 
-    for k,v in replacements.items():
-        text = text.replace(k,v)
+    for k, v in replacements.items():
+        text = text.replace(k, v)
 
     return text
 
 # ==============================
-# WHISPER
+# WHISPER (CLI via python -m whisper)
 # ==============================
 
 def transcribe(audio, work_dir):
 
+    txt = work_dir / f"{audio.stem}.txt"
+
+    print("Running Whisper CLI...")
+
     subprocess.run([
-        "whisper",
+        sys.executable, "-m", "whisper",
         str(audio),
         "--model", WHISPER_MODEL,
-        "--task", "transcribe",
+        "--output_format", "txt",
         "--output_dir", str(work_dir)
     ], check=True)
 
-    txt = work_dir / f"{audio.stem}.txt"
-
-    if txt.exists():
-        return txt
-
-    print("WARNING: Whisper output not found:", audio)
-    return None
-
+    return txt if txt.exists() else None
 # ==============================
 # NORMALIZE
 # ==============================
 
 def normalize(txt):
     text = txt.read_text()
-    text = text.replace("\n"," ")
+    text = text.replace("\n", " ")
     text = " ".join(text.split())
     txt.write_text(text)
 
@@ -127,11 +117,11 @@ def split(txt, work_dir):
 
         if words + wc > CHUNK_WORDS and cur:
             chunks.append(" ".join(cur))
-            cur=[]
-            words=0
+            cur = []
+            words = 0
 
         cur.append(s)
-        words+=wc
+        words += wc
 
     if cur:
         chunks.append(" ".join(cur))
@@ -140,9 +130,9 @@ def split(txt, work_dir):
     outdir = work_dir / base
     outdir.mkdir(exist_ok=True)
 
-    files=[]
+    files = []
 
-    for i,c in enumerate(chunks,1):
+    for i, c in enumerate(chunks, 1):
         f = outdir / f"{base}-{i:02d}.txt"
         f.write_text(c)
         files.append(f)
@@ -150,46 +140,23 @@ def split(txt, work_dir):
     return files
 
 # ==============================
-# MINI EDIT (FINAL FIX)
+# MINI EDIT (FINAL STABLE)
 # ==============================
 
 def edit_file(file, work_dir):
 
+    client = OpenAI()
+
     text = file.read_text()
+
+    prompt = SYSTEM_PROMPT_MINI + "\n\n" + text
 
     r = client.responses.create(
         model=OPENAI_MODEL_MINI,
-        input=[
-            {"role":"system","content":SYSTEM_PROMPT_MINI},
-            {"role":"user","content":text}
-        ]
+        input=prompt
     )
 
-    # SAFE extraction
-    parts = []
-    for item in r.output:
-        for c in item.content:
-            if hasattr(c, "text"):
-                parts.append(c.text)
-
-    raw = " ".join(parts)
-    raw = str(raw)
-
-    # ==============================
-    # CRITICAL FIX: NORMALIZE GPT OUTPUT
-    # ==============================
-
-    # Fix hyphen-separated characters
-    if "---" in raw:
-        pieces = raw.split("---")
-        if all(len(p.strip()) <= 1 for p in pieces[:50]):
-            raw = "".join(pieces)
-
-    # Fix space-separated characters
-    if " " in raw:
-        tokens = raw.split()
-        if all(len(t) == 1 for t in tokens[:50]):
-            raw = "".join(tokens)
+    raw = r.output_text
 
     cleaned = enforce_ascii(raw)
 
@@ -198,40 +165,33 @@ def edit_file(file, work_dir):
 
     return out
 
+# ==============================
+# EDIT ALL (SEQUENTIAL)
+# ==============================
+
 def edit_all(files, work_dir):
 
-    edited=[]
+    edited = []
 
     print(f"Total chunks (mini): {len(files)}")
 
-    with ThreadPoolExecutor(max_workers=MAX_WORKERS) as executor:
+    for f in files:
+        try:
+            result = edit_file(f, work_dir)
+            print(f"✓ Edited (mini): {f.name}")
+            edited.append(result)
+        except Exception as e:
+            print(f"✗ FAILED (mini): {f.name} -> {e}")
 
-        futures = {
-            executor.submit(edit_file, f, work_dir): f
-            for f in files
-        }
-
-        for future in as_completed(futures):
-
-            f = futures[future]
-
-            try:
-                result = future.result()
-                print(f"✓ Edited (mini): {f.name}")
-                edited.append(result)
-
-            except Exception as e:
-                print(f"✗ FAILED (mini): {f.name} -> {e}")
-
-    return sorted(edited)
+    return edited
 
 # ==============================
 # COMBINE
 # ==============================
 
-def combine(files,output):
+def combine(files, output):
 
-    combined=""
+    combined = ""
 
     for f in files:
         combined += f.read_text() + "\n\n"
@@ -284,7 +244,7 @@ def process(audio):
 
 def main():
 
-    if len(sys.argv)!=2:
+    if len(sys.argv) != 2:
         sys.exit("Usage: inourtime_pipeline_audio.py <audio_or_folder>")
 
     p = Path(sys.argv[1])

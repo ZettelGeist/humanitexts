@@ -23,14 +23,10 @@
 
 # NOTES:
 # - Primary “go-to” script for course lectures
-# - Includes thread limits for Whisper CPU control
 
-import subprocess
 import sys
 from pathlib import Path
-from concurrent.futures import ThreadPoolExecutor, as_completed
 
-import os
 import spacy
 from openai import OpenAI
 
@@ -44,11 +40,8 @@ OPENAI_MODEL_5 = "gpt-5"
 OPENAI_MODEL_MINI = "gpt-4.1-mini"
 
 CHUNK_WORDS = 500
-MAX_WORKERS = 4
 
 WORK_DIR = "_transcription_work"
-
-client = OpenAI()
 
 # ==============================
 # PROMPTS
@@ -110,12 +103,10 @@ nlp.add_pipe("sentencizer")
 
 def enforce_ascii(text):
     replacements = {
-        "":"-",
-        "":"-",
-        "“":'"',
-        "”":'"',
-        "’":"'",
-        "‘":"'"
+        "“": '"',
+        "”": '"',
+        "’": "'",
+        "‘": "'"
     }
 
     for k,v in replacements.items():
@@ -124,42 +115,24 @@ def enforce_ascii(text):
     return text
 
 # ==============================
-# WHISPER
+# WHISPER (CLI via python -m whisper)
 # ==============================
 
 def transcribe(audio, work_dir):
 
+    txt = work_dir / f"{audio.stem}.txt"
+
+    print("Running Whisper CLI...")
+
     subprocess.run([
-        "whisper",
+        sys.executable, "-m", "whisper",
         str(audio),
         "--model", WHISPER_MODEL,
-        "--task", "transcribe",
+        "--output_format", "txt",
         "--output_dir", str(work_dir)
     ], check=True)
 
-    txt = work_dir / f"{audio.stem}.txt"
-
-    if txt.exists():
-        return txt
-
-    for ext in [".vtt", ".srt"]:
-        alt = work_dir / f"{audio.stem}{ext}"
-        if alt.exists():
-            print(f"Converting {alt.name} to txt")
-
-            lines = []
-            for line in alt.read_text().splitlines():
-                if "-->" in line:
-                    continue
-                if line.strip().isdigit():
-                    continue
-                lines.append(line)
-
-            txt.write_text(" ".join(lines))
-            return txt
-
-    print("WARNING: Whisper output not found:", audio)
-    return None
+    return txt if txt.exists() else None
 
 # ==============================
 # CLEAN TRANSCRIPT
@@ -215,19 +188,20 @@ def split(txt, work_dir):
     return files
 
 # ==============================
-# OPENAI EDIT
+# OPENAI EDIT (STABLE)
 # ==============================
 
 def edit_file(file, work_dir, model, prompt, suffix):
 
+    client = OpenAI()
+
     text = file.read_text()
+
+    full_prompt = prompt + "\n\n" + text
 
     r = client.responses.create(
         model=model,
-        input=[
-            {"role":"system","content":prompt},
-            {"role":"user","content":text}
-        ]
+        input=full_prompt
     )
 
     cleaned = enforce_ascii(r.output_text)
@@ -243,26 +217,15 @@ def edit_all(files, work_dir, model, prompt, suffix):
 
     print(f"Total chunks ({suffix}): {len(files)}")
 
-    with ThreadPoolExecutor(max_workers=MAX_WORKERS) as executor:
+    for f in files:
+        try:
+            result = edit_file(f, work_dir, model, prompt, suffix)
+            print(f"✓ Edited ({suffix}): {f.name}")
+            edited.append(result)
+        except Exception as e:
+            print(f"✗ FAILED ({suffix}): {f.name} -> {e}")
 
-        futures = {
-            executor.submit(edit_file, f, work_dir, model, prompt, suffix): f
-            for f in files
-        }
-
-        for future in as_completed(futures):
-
-            f = futures[future]
-
-            try:
-                result = future.result()
-                print(f"✓ Edited ({suffix}): {f.name}")
-                edited.append(result)
-
-            except Exception as e:
-                print(f"✗ FAILED ({suffix}): {f.name} -> {e}")
-
-    return sorted(edited)
+    return edited
 
 # ==============================
 # COMBINE
@@ -314,22 +277,10 @@ def process(audio):
     splits = split(work_txt, work_dir)
 
     print("Editing chunks (GPT-5)")
-    edited_5 = edit_all(
-        splits,
-        work_dir,
-        OPENAI_MODEL_5,
-        SYSTEM_PROMPT,
-        "5"
-    )
+    edited_5 = edit_all(splits, work_dir, OPENAI_MODEL_5, SYSTEM_PROMPT, "5")
 
     print("Editing chunks (4.1-mini)")
-    edited_mini = edit_all(
-        splits,
-        work_dir,
-        OPENAI_MODEL_MINI,
-        SYSTEM_PROMPT_MINI,
-        "mini"
-    )
+    edited_mini = edit_all(splits, work_dir, OPENAI_MODEL_MINI, SYSTEM_PROMPT_MINI, "mini")
 
     combine(edited_5, final_5)
     combine(edited_mini, final_mini)

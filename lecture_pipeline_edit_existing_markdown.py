@@ -23,9 +23,10 @@
 # - Does NOT run Whisper
 # - Safe to run on completed lecture files
 
+#!/usr/bin/env python3
+
 import sys
 from pathlib import Path
-from concurrent.futures import ThreadPoolExecutor, as_completed
 
 import spacy
 from openai import OpenAI
@@ -37,11 +38,8 @@ from openai import OpenAI
 OPENAI_MODEL_MINI = "gpt-4.1-mini"
 
 CHUNK_WORDS = 500
-MAX_WORKERS = 2
 
 WORK_DIR = "_transcription_work"
-
-client = OpenAI()
 
 # ==============================
 # PROMPT
@@ -79,8 +77,8 @@ nlp.add_pipe("sentencizer")
 
 def enforce_ascii(text):
     replacements = {
-        "—":"-",
-        "–":"-",
+        "":"-",
+        "":"-",
         "“":'"',
         "”":'"',
         "’":"'",
@@ -144,19 +142,20 @@ def split(txt, work_dir):
     return files
 
 # ==============================
-# OPENAI EDIT
+# OPENAI EDIT (STABLE)
 # ==============================
 
 def edit_file(file, work_dir):
 
+    client = OpenAI()
+
     text = file.read_text()
+
+    full_prompt = SYSTEM_PROMPT_MINI + "\n\n" + text
 
     r = client.responses.create(
         model=OPENAI_MODEL_MINI,
-        input=[
-            {"role":"system","content":SYSTEM_PROMPT_MINI},
-            {"role":"user","content":text}
-        ]
+        input=full_prompt
     )
 
     cleaned = enforce_ascii(r.output_text)
@@ -172,26 +171,15 @@ def edit_all(files, work_dir):
 
     print(f"Total chunks (mini): {len(files)}")
 
-    with ThreadPoolExecutor(max_workers=MAX_WORKERS) as executor:
+    for f in files:
+        try:
+            result = edit_file(f, work_dir)
+            print(f"✓ Edited (mini): {f.name}")
+            edited.append(result)
+        except Exception as e:
+            print(f"✗ FAILED (mini): {f.name} -> {e}")
 
-        futures = {
-            executor.submit(edit_file, f, work_dir): f
-            for f in files
-        }
-
-        for future in as_completed(futures):
-
-            f = futures[future]
-
-            try:
-                result = future.result()
-                print(f"✓ Edited (mini): {f.name}")
-                edited.append(result)
-
-            except Exception as e:
-                print(f"✗ FAILED (mini): {f.name} -> {e}")
-
-    return sorted(edited)
+    return edited
 
 # ==============================
 # COMBINE
@@ -209,21 +197,23 @@ def combine(files, output):
     output.write_text(combined)
 
 # ==============================
-# PROCESS MD FILE
+# PROCESS FILE (.md or .txt)
 # ==============================
 
-def process_md(md_file):
+def process_file(input_file):
 
-    final_mini = md_file.with_name(md_file.stem + "-mini.md")
+    # ✅ Always output markdown (Option A  explicit behavior)
+    final_mini = input_file.with_name(input_file.stem + "-mini.md")
 
-    print("Processing:", md_file)
+    print("Processing:", input_file)
+    print(f"Output will be written to: {final_mini.name}")
 
-    work_dir = md_file.parent / WORK_DIR
+    work_dir = input_file.parent / WORK_DIR
     work_dir.mkdir(exist_ok=True)
 
-    work_txt = work_dir / f"{md_file.stem}.txt"
+    work_txt = work_dir / f"{input_file.stem}.txt"
 
-    text = md_file.read_text()
+    text = input_file.read_text()
     work_txt.write_text(text)
 
     normalize(work_txt)
@@ -245,29 +235,31 @@ def process_md(md_file):
 def main():
 
     if len(sys.argv) != 2:
-        sys.exit("Usage: lecture_pipeline_markdown.py <md_file_or_folder>")
+        sys.exit("Usage: lecture_pipeline_markdown.py <file_or_folder>")
 
     p = Path(sys.argv[1])
 
     if p.is_file():
-        process_md(p)
+        process_file(p)
 
     else:
-        for f in sorted(p.glob("*.md")):
+        for f in sorted(p.glob("*")):
+
+            if f.suffix.lower() not in [".md", ".txt"]:
+                continue
 
             name = f.name
 
-            # Only process ORIGINAL files
+            # Skip already processed outputs
             if "-mini" in name or "-5" in name:
                 continue
 
-            # Skip if already processed
             mini_version = f.with_name(f.stem + "-mini.md")
             if mini_version.exists():
                 print("Skipping (already processed):", f.name)
                 continue
 
-            process_md(f)
+            process_file(f)
 
 if __name__ == "__main__":
     main()
