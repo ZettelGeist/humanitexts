@@ -1,5 +1,24 @@
 #!/usr/bin/env python3
 
+# PURPOSE:
+# High-throughput transcription and cleaning pipeline (fast batch processing)
+
+# INPUT:
+# - Audio files (.mp3, .mp4, .m4a, .wav)
+
+# OUTPUT:
+# - .md (cleaned markdown transcript)
+
+# DESCRIPTION:
+# - Runs Whisper transcription (typically medium model)
+# - Splits transcript into chunks
+# - Processes chunks with GPT-4.1-mini only
+# - Recombines into a single markdown output
+
+# USE CASE:
+# - Large batch processing (e.g., a podcast transcription archive)
+# - Fast, lower-cost transcript generation
+
 import sys
 from pathlib import Path
 import subprocess
