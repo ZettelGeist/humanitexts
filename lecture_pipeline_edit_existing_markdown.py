@@ -77,8 +77,8 @@ nlp.add_pipe("sentencizer")
 
 def enforce_ascii(text):
     replacements = {
-        "":"-",
-        "":"-",
+        "–":"-",
+        "—":"-",
         "“":'"',
         "”":'"',
         "’":"'",
