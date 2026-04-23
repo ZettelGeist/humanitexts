@@ -47,6 +47,14 @@ The pipeline combines automated transcription with constrained language-model ed
 The simplest way to use the system is:
 
 ```bash
+# set up environment (recommended)
+python -m venv .venv
+source .venv/bin/activate
+
+pip install openai spacy
+python -m spacy download en_core_web_sm
+
+# run the pipeline
 python lecture_pipeline_whisper_mini_markdown.py your_audio_file.mp3
 ```
 
@@ -74,6 +82,30 @@ python lecture_pipeline_whisper_mini_markdown.py .
 * Output files are written alongside the source audio
 * Intermediate files are stored in `_transcription_work/`
 * If a transcript already exists, Whisper will be skipped
+
+---
+
+### Execution Notes
+
+These scripts are designed to be run inside a Python virtual environment.
+
+When a virtual environment is activated, both `python` and `python3` should resolve to the same interpreter. This ensures that dependencies such as `spacy` are available to the scripts.
+
+If you encounter errors like:
+
+```
+ModuleNotFoundError: No module named 'spacy'
+```
+
+it usually indicates that the script is being executed with a different Python interpreter than the one in which dependencies were installed.
+
+Running the scripts via:
+
+```bash
+python script_name.py
+```
+
+inside an activated environment is recommended.
 
 ---
 
@@ -138,6 +170,8 @@ Second-pass refinement.
 
 Applies a constrained editing pass to improve readability without altering structure or meaning.
 
+This script is useful for reprocessing transcripts after transcription or for applying improvements to existing Markdown files.
+
 ---
 
 ## Requirements
@@ -186,5 +220,4 @@ Documentation will be expanded over time as the system is refined.
 
 ## Notes
 
-The project grows out of practical teaching needs rather than software engineering priorities. It is shared here in the hope that others working with similar materials—lectures, seminars, long-form audio—may find it useful or adapt it to their own purposes.
-
+The project grows out of practical teaching needs rather than software engineering priorities. It is shared here in the hope that others working with similar materials—lectures, seminars, long-form audio—may find it useful or adapt
